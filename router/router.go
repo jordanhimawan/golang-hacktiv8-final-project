@@ -15,12 +15,5 @@ func StartApp() *gin.Engine {
 		userRoute.POST("/login", controllers.UserLogin)
 	}
 
-	// photoRoute := r.Group("/photo")
-	// {
-	// 	photoRoute.Use(middlewares.Auth())
-	// 	photoRoute.POST("/", controllers.CreateProduct)
-	// 	photoRoute.PUT("/:productId", middlewares.Authorization(), controllers.UpdateProduct)
-	// }
-
 	return r
 }
