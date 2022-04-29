@@ -72,9 +72,70 @@ func UserLogin(c *gin.Context) {
 	token := helpers.GenerateToken(user.Id, user.Email)
 
 	c.JSON(http.StatusOK, gin.H{
-		"status": 200,
-		"payload": map[string]string{
-			"access_token": token,
-		},
+		"status":       200,
+		"access_token": token,
 	})
+}
+
+func UpdateUser(c *gin.Context) {
+	db := database.GetDB()
+	userId := c.Param("userId")
+
+	var user models.User
+	if AppJson == helpers.GetContentType(c) {
+		c.ShouldBindJSON(&user)
+	} else {
+		c.ShouldBind(&user)
+	}
+
+	err := db.Debug().Model(&user).Where("id = ?", userId).Updates(models.User{
+		Email:    user.Email,
+		Password: user.Password,
+	}).Error
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "BAD REQUEST",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"payload": user,
+	})
+
+}
+
+func DeleteUser(c *gin.Context) {
+	db := database.GetDB()
+	userId := c.Param("userId")
+
+	var user models.User
+	if AppJson == helpers.GetContentType(c) {
+		c.ShouldBindJSON(&user)
+	} else {
+		c.ShouldBind(&user)
+	}
+
+	err := db.Debug().Model(&user).Where("id = ?", userId).Delete(models.User{
+		Email:    user.Email,
+		Password: user.Password,
+	}).Error
+
+	if err != nil {
+		fmt.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "BAD REQUEST",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Your account has been succesfully deleted",
+	})
+
 }

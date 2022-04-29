@@ -14,7 +14,7 @@ var (
 	user    string = "postgres"
 	pass    string = "koinworks2022*" // diisi password masing-masing
 	dbname  string = "db-go-sql"
-	sslmode string = "disabled"
+	sslmode string = "disable"
 	db      *gorm.DB
 	err     error
 )
